@@ -1,0 +1,17 @@
+@page {
+	margin: 1cm;
+	@bottom {
+		color: #1d1d20;
+		content: "Synbioz, page " counter(page) " sur " counter(pages);
+		font-family: "Lucida Grande", "Verdana", "Helvetica", "Nimbus Sans L", sans-serif;
+		font-size: 8pt;
+	}   
+}
+
+body {
+	background: none;
+}
+
+#content {
+	background-image-resolution: 100dpi;
+}

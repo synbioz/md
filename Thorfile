@@ -6,23 +6,79 @@ require 'maruku'
 require 'liquid'
 
 class MD < Thor
+  FORMATS = %w{html pdf}
+  DEFAULT_PATH = File.expand_path("~/.config/md/themes/default")
+  DEFAULT_LAYOUT = File.join(DEFAULT_PATH, "layout.html")
+  DEFAULT_HTML_CSS = File.join(DEFAULT_PATH, "css", "html.css")
+  DEFAULT_PDF_CSS = File.join(DEFAULT_PATH, "css", "pdf.css")
+  
   namespace 'md'
-  default_task :setup
-  map "-p" => "pdf"
+  default_task :generate
 
   desc 'setup', 'Create config files.'
   def setup
-    puts "setup"
+    FileUtils.mkdir_p File.expand_path("~/.config/md/themes/default/css")
+    FileUtils.mkdir_p File.expand_path("~/.config/md/themes/default/images")
+    FileUtils.cp "layout.html", DEFAULT_PATH
+    FileUtils.cp_r "css/", DEFAULT_PATH
+    FileUtils.cp_r "images/", DEFAULT_PATH
   end
 
-  desc 'generate', 'Generate html from md.'
-  def html
-    puts "html"
+  desc 'generate MD_FILENAME', 'Generate HTML or PDF from md.'
+  method_option :format, :type => :string, :aliases => "-f", :desc => "Output format (html, pdf)", :default => "html"
+  method_option :output, :type => :string, :aliases => "-o", :desc => "Output file"
+  def generate(md_file)
+    ensure_layout_presence(options)
+    
+    begin
+      if FORMATS.include?(options[:format])
+        self.send("generate_#{options[:format]}", md_file)
+      else
+        raise "Unknown format"
+      end
+    rescue
+      puts "An exception occured: #{$!}"
+    end
   end
+  
+  private
+  
+  def ensure_layout_presence(options)
+  	raise "layout.html not found." unless File.exists?(DEFAULT_LAYOUT)
+  	raise "html.css not found." if !File.exists?(DEFAULT_HTML_CSS) && options[:format] == "html"
+  	raise "pdf.css not found." if !File.exists?(DEFAULT_PDF_CSS) && options[:format] == "pdf"
+  end
+  
+  def generate_html(md_file)
+  	filename = File.basename(md_file, '.*')
 
-  desc 'generate', 'Generate pdf from md.'
-  def pdf
-    puts "pdf"
+  	doc = Maruku.new(File.read(md_file))
+  	template = Liquid::Template.parse(File.read(DEFAULT_LAYOUT))
+  	
+  	File.open("#{filename}.html", 'w') do |f|
+  		f.write(template.render('content' => doc.to_html, 'title' => filename, 'stylesheet' => DEFAULT_HTML_CSS))
+  	end
+  end
+  
+  def generate_pdf(md_file)
+	  generate_html(md_file)
+
+    filename = File.basename(md_file, '.*')
+    html_path = "#{filename}.html"
+  	pdf_path = "#{filename}.pdf"
+
+  	command = pdf_command + " -o #{pdf_path} #{html_path}"
+  	system(command)
+  	
+  	# Remove temp html file
+  	FileUtils.rm("#{filename}.html")
+  end
+  
+  def pdf_command
+  	command = `which prince`.chomp
+  	raise "Prince has not been found in your path." if command.empty?
+  	command << " -s #{DEFAULT_PDF_CSS}"
+  	command << " --input=html"
   end
 
   class Theme < Thor
