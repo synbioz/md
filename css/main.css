@@ -1,0 +1,68 @@
+* {
+  margin: 0;
+  outline: none;
+  padding: 0;
+}
+
+body {
+  /* background: url('../images/background.png'); */
+  font-family: "Gill Sans", "Lucida Grande", "Verdana", sans-serif;
+}
+
+a {
+  border-bottom: 1px dotted;
+  color: #368BB7;
+  text-decoration: none;
+}
+
+a:hover {
+  border-bottom: 1px solid;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #483738;
+}
+
+h1 {
+  border-bottom: 1px solid #ccc;
+  margin-right: 100px;
+  padding-bottom: 0.5em;
+  text-align: center;
+}
+
+h2, h3, h4, h5, h6 {
+  padding: 0.5em 0;
+}
+
+ul {
+  margin-left: 1em;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+#content {
+  background: url('../images/synbioz.png') no-repeat top right;
+  background-color: white;
+  border: 0.1em solid #ccc;
+  margin: 1em auto;
+  padding: 1em 2em;
+  width: 40em;
+  border-radius: 1em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+}
+
+#content pre {
+  background-color: lightyellow;
+  border: 1px dotted #ccc;
+  margin: 0.5em 0;
+  padding: 1em 1em;
+  width: 48em;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
