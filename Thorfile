@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'thor'
-require 'maruku'
+require 'kramdown'
 require 'liquid'
 
 class MD < Thor
@@ -52,7 +52,7 @@ class MD < Thor
   def generate_html(md_file)
   	filename = File.basename(md_file, '.*')
 
-  	doc = Maruku.new(File.read(md_file))
+  	doc = Kramdown::Document.new(File.read(md_file))
   	template = Liquid::Template.parse(File.read(DEFAULT_LAYOUT))
   	
   	File.open("#{filename}.html", 'w') do |f|
