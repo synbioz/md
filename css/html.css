@@ -18,19 +18,18 @@ a {
 a:hover {
 	border-bottom: 1px solid;
 }
-	
+
 h1, h2, h3, h4, h5, h6 {
-	color: #483738;
+	/*color: #483738;*/
+	color: rgb(40,42,48);
 }
 
 h1 {
-	border-bottom: 1px solid #ccc;
-	margin-right: 100px;
 	padding-bottom: 0.5em;
 	text-align: center;
 }
 
-h2 {
+h2, h3, h4 {
 	padding: 0.5em 0;
 }
 
@@ -42,14 +41,27 @@ p {
   margin-bottom: 1em;
 }
 
+p.estimation_intermediaire {
+  margin-top: 0.5em;
+}
+
+span.estimation {
+  float: right;
+  font-weight: bold;
+}
+
+table td, table th {
+  padding: 0.3em 0.5em;
+}
+
 #content {
-	background: url('../images/synbioz.png') no-repeat top right;
+	/*background: url('../images/synbioz.png') no-repeat top right;*/
 	background-color: white;
-	border: 0.1em solid #ccc;
+	/*border-bottom: 0.1em solid #ccc;*/
 	margin: 1em auto;
 	padding: 1em 2em;
 	width: 40em;
-	border-radius: 1em;
-	-moz-border-radius: 1em;
-	-webkit-border-radius: 1em;
+	/*border-radius: 1em;*/
+	/*-moz-border-radius: 1em;
+	-webkit-border-radius: 1em;*/
 }

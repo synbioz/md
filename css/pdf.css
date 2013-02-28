@@ -1,10 +1,18 @@
 @page {
   margin: 1cm;
+
   @bottom {
     color: #1d1d20;
     content: "Synbioz, 5 rue de douai 75009 Paris | page " counter(page) " sur " counter(pages);
     font-family: "Lucida Grande", "Verdana", "Helvetica", "Nimbus Sans L", sans-serif;
     font-size: 8pt;
+    border-top: 0.1em solid #ccc;
+  }
+}
+
+@page:first {
+  @bottom:  {
+    border-top: none;
   }
 }
 
@@ -26,8 +34,26 @@ table {
 
 table td, table th {
   border: 1px solid grey;
+  padding: 0 10px 0 20px;
 }
 
-table td {
-  padding: 0 10px 0 20px;
+div.page-break-before {
+  page-break-before: always;
+}
+
+div.page-break-after {
+  page-break-after: always;
+}
+
+h1.synbioz {
+  background: url('../images/logo_synbioz.png') no-repeat center center;
+  height: 24cm;
+  line-height: 24cm;
+  border: none;
+}
+
+h2.page-title {
+  height: 24cm;
+  line-height: 24cm;
+  text-align: center;
 }
