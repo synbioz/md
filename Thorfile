@@ -11,7 +11,7 @@ class MD < Thor
   DEFAULT_LAYOUT = File.join(DEFAULT_PATH, "layout.html")
   DEFAULT_HTML_CSS = File.join(DEFAULT_PATH, "css", "html.css")
   DEFAULT_PDF_CSS = File.join(DEFAULT_PATH, "css", "pdf.css")
-  
+
   namespace 'md'
   default_task :generate
 
@@ -29,7 +29,7 @@ class MD < Thor
   method_option :output, :type => :string, :aliases => "-o", :desc => "Output file"
   def generate(md_file)
     ensure_layout_presence(options)
-    
+
     begin
       if FORMATS.include?(options[:format])
         self.send("generate_#{options[:format]}", md_file)
@@ -40,26 +40,51 @@ class MD < Thor
       puts "An exception occured: #{$!}"
     end
   end
-  
+
+  desc 'watch', 'Add guardfile to regenerate PDF when md changed'
+  def watch
+    open('Guardfile', 'w+') do |f|
+      f.write <<-EOF
+require 'guard/guard'
+
+module ::Guard
+  class MD < ::Guard::Guard
+    def run_all
+    end
+
+    def run_on_changes(paths)
+      %x{thor md:generate "\#{paths.first}" -f pdf}
+    end
+  end
+end
+
+guard :md do
+  watch(/(.*)\.md/)
+end
+EOF
+    end
+    %x{guard}
+  end
+
   private
-  
+
   def ensure_layout_presence(options)
   	raise "layout.html not found." unless File.exists?(DEFAULT_LAYOUT)
   	raise "html.css not found." if !File.exists?(DEFAULT_HTML_CSS) && options[:format] == "html"
   	raise "pdf.css not found." if !File.exists?(DEFAULT_PDF_CSS) && options[:format] == "pdf"
   end
-  
+
   def generate_html(md_file)
   	filename = File.basename(md_file, '.*')
 
   	doc = Kramdown::Document.new(File.read(md_file))
   	template = Liquid::Template.parse(File.read(DEFAULT_LAYOUT))
-  	
+
   	File.open("#{filename}.html", 'w') do |f|
   		f.write(template.render('content' => doc.to_html, 'title' => filename, 'stylesheet' => DEFAULT_HTML_CSS))
   	end
   end
-  
+
   def generate_pdf(md_file)
 	  generate_html(md_file)
 
@@ -69,11 +94,11 @@ class MD < Thor
 
   	command = pdf_command + " -o #{pdf_path} #{html_path}"
   	system(command)
-  	
+
   	# Remove temp html file
   	FileUtils.rm("#{filename}.html")
   end
-  
+
   def pdf_command
   	command = `which prince`.chomp
   	raise "Prince has not been found in your path." if command.empty?
@@ -111,7 +136,7 @@ class MD < Thor
         puts "#{name} theme created."
       end
     end
-    
+
     desc 'delete', 'Delete an existing theme.'
     def delete
       raise ArgumentError, "#{name} is a reserved word." if RESERVED_WORDS.include?(name)
