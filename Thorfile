@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'thor'
-require 'kramdown'
+require 'redcarpet'
 require 'liquid'
 
 class MD < Thor
@@ -11,6 +11,9 @@ class MD < Thor
   DEFAULT_LAYOUT = File.join(DEFAULT_PATH, "layout.html")
   DEFAULT_HTML_CSS = File.join(DEFAULT_PATH, "css", "html.css")
   DEFAULT_PDF_CSS = File.join(DEFAULT_PATH, "css", "pdf.css")
+
+  class Renderer < Redcarpet::Render::HTML
+  end
 
   namespace 'md'
   default_task :generate
@@ -69,41 +72,42 @@ EOF
   private
 
   def ensure_layout_presence(options)
-  	raise "layout.html not found." unless File.exists?(DEFAULT_LAYOUT)
-  	raise "html.css not found." if !File.exists?(DEFAULT_HTML_CSS) && options[:format] == "html"
-  	raise "pdf.css not found." if !File.exists?(DEFAULT_PDF_CSS) && options[:format] == "pdf"
+    raise "layout.html not found." unless File.exists?(DEFAULT_LAYOUT)
+    raise "html.css not found." if !File.exists?(DEFAULT_HTML_CSS) && options[:format] == "html"
+    raise "pdf.css not found." if !File.exists?(DEFAULT_PDF_CSS) && options[:format] == "pdf"
   end
 
   def generate_html(md_file)
-  	filename = File.basename(md_file, '.*')
+    renderer = Redcarpet::Markdown.new(Renderer)
+    filename = File.basename(md_file, '.*')
 
-  	doc = Kramdown::Document.new(File.read(md_file))
-  	template = Liquid::Template.parse(File.read(DEFAULT_LAYOUT))
+    doc = File.read(md_file)
+    template = Liquid::Template.parse(File.read(DEFAULT_LAYOUT))
 
-  	File.open("#{filename}.html", 'w') do |f|
-  		f.write(template.render('content' => doc.to_html, 'title' => filename, 'stylesheet' => DEFAULT_HTML_CSS))
-  	end
+    File.open("#{filename}.html", 'w') do |f|
+      f.write(template.render('content' => renderer.render(doc), 'title' => filename, 'stylesheet' => DEFAULT_HTML_CSS))
+    end
   end
 
   def generate_pdf(md_file)
-	  generate_html(md_file)
+    generate_html(md_file)
 
     filename = File.basename(md_file, '.*')
     html_path = "#{filename}.html"
-  	pdf_path = "#{filename}.pdf"
+    pdf_path = "#{filename}.pdf"
 
-  	command = pdf_command + " -o #{pdf_path} #{html_path}"
-  	system(command)
+    command = pdf_command + " -o #{pdf_path} #{html_path}"
+    system(command)
 
-  	# Remove temp html file
-  	FileUtils.rm("#{filename}.html")
+    # Remove temp html file
+    FileUtils.rm("#{filename}.html")
   end
 
   def pdf_command
-  	command = `which prince`.chomp
-  	raise "Prince has not been found in your path." if command.empty?
-  	command << " -s #{DEFAULT_PDF_CSS}"
-  	command << " --input=html"
+    command = `which prince`.chomp
+    raise "Prince has not been found in your path." if command.empty?
+    command << " -s #{DEFAULT_PDF_CSS}"
+    command << " --input=html"
   end
 
   class Theme < Thor
