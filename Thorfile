@@ -56,6 +56,7 @@ module ::Guard
     end
 
     def run_on_changes(paths)
+      puts "Rebuilding \#{paths.inspect}"
       %x{thor md:generate "\#{paths.first}" -f pdf}
     end
   end
