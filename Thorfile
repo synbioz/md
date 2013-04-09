@@ -5,14 +5,35 @@ require 'thor'
 require 'redcarpet'
 require 'liquid'
 
-class MD < Thor
+class ::MD < Thor # :: is used to escape Thor::Sandbox
   FORMATS = %w{html pdf}
   DEFAULT_PATH = File.expand_path("~/.config/md/themes/default")
   DEFAULT_LAYOUT = File.join(DEFAULT_PATH, "layout.html")
   DEFAULT_HTML_CSS = File.join(DEFAULT_PATH, "css", "html.css")
   DEFAULT_PDF_CSS = File.join(DEFAULT_PATH, "css", "pdf.css")
 
-  class Renderer < Redcarpet::Render::HTML
+  module Config
+    MarkdownDefaults = {
+      fenced_code_blocks: true,
+      no_intra_emphasis: true
+    }
+
+    class Renderer < Redcarpet::Render::HTML; end
+
+    private_constant :MarkdownDefaults
+    private_constant :Renderer
+
+    class << self
+      def markdown_options(options = {})
+        MarkdownDefaults.update(options)
+      end
+
+      def renderer(&block)
+        return Renderer unless block_given?
+
+        Renderer.class_eval(&block)
+      end
+    end
   end
 
   namespace 'md'
@@ -30,8 +51,12 @@ class MD < Thor
   desc 'generate MD_FILENAME', 'Generate HTML or PDF from md.'
   method_option :format, :type => :string, :aliases => "-f", :desc => "Output format (html, pdf)", :default => "html"
   method_option :output, :type => :string, :aliases => "-o", :desc => "Output file"
+  method_option :require, :type => :string, :aliases => "-r", :desc => "Load additional Ruby code"
   def generate(md_file)
     ensure_layout_presence(options)
+
+    config_file = File.expand_path('./Mdfile')
+    Config.module_eval(File.read(config_file)) if File.exist?(config_file)
 
     begin
       if FORMATS.include?(options[:format])
@@ -65,7 +90,7 @@ end
 guard :md do
   watch(/(.*)\.md/)
 end
-EOF
+      EOF
     end
     %x{guard}
   end
@@ -79,7 +104,7 @@ EOF
   end
 
   def generate_html(md_file)
-    renderer = Redcarpet::Markdown.new(Renderer)
+    renderer = Redcarpet::Markdown.new(Config.renderer, Config.markdown_options)
     filename = File.basename(md_file, '.*')
 
     doc = File.read(md_file)
