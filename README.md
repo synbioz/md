@@ -31,6 +31,32 @@ On the command-line:
     $ thor md:generate my_markdown_file.md # Generates "my_markdown_file.html"
     $ thor md:generate my_markdown_file.md -f pdf # Generates "my_markdown_file.pdf"
 
+Settings and customization
+--------------------------
+
+MD can be configured through an `Mdfile` placed in directory where you launch the command.
+
+`Mdfile`s have two purposes:
+
+- Setting internal Markdown options through the `markdown_option` method,
+- Extending the default Markdown renderer by supplying a block to the `renderer` method.
+
+For details about options and custom renderers, have a look at the
+[Redcarpet](https://github.com/vmg/redcarpet) docs.
+
+Here is and example `Mdfile`:
+
+``` ruby
+markdown_options no_links: true,
+                 no_images: true
+
+renderer do
+  def block_code(code, language)
+    "#{language}: <pre>#{code}</pre>"
+  end
+end
+```
+
 Other
 -----
 
