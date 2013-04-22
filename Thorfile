@@ -55,8 +55,12 @@ class ::MD < Thor # :: is used to escape Thor::Sandbox
   def generate(md_file)
     ensure_layout_presence(options)
 
-    config_file = File.expand_path('./Mdfile')
-    Config.module_eval(File.read(config_file)) if File.exist?(config_file)
+    Pathname.new(Dir.pwd).ascend do |dir|
+      file = dir.join('Mdfile')
+      next unless file.exist?
+
+      break Config.module_eval(file.read)
+    end
 
     begin
       if FORMATS.include?(options[:format])
