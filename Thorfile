@@ -53,13 +53,7 @@ class ::MD < Thor # :: is used to escape Thor::Sandbox
   method_option :output, :type => :string, :aliases => "-o", :desc => "Output file"
   def generate(md_file)
     ensure_layout_presence(options)
-
-    Pathname.new(Dir.pwd).ascend do |dir|
-      file = dir.join('Mdfile')
-      next unless file.exist?
-
-      break Config.module_eval(file.read)
-    end
+    apply_mdfile!
 
     begin
       if FORMATS.include?(options[:format])
@@ -99,6 +93,15 @@ end
   end
 
   private
+
+  def apply_mdfile!
+    Pathname.new(Dir.pwd).ascend do |dir|
+      file = dir.join('Mdfile')
+      next unless file.exist?
+
+      break Config.module_eval(file.read)
+    end
+  end
 
   def ensure_layout_presence(options)
     raise "layout.html not found." unless File.exists?(DEFAULT_LAYOUT)
