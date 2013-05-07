@@ -51,7 +51,6 @@ class ::MD < Thor # :: is used to escape Thor::Sandbox
   desc 'generate MD_FILENAME', 'Generate HTML or PDF from md.'
   method_option :format, :type => :string, :aliases => "-f", :desc => "Output format (html, pdf)", :default => "html"
   method_option :output, :type => :string, :aliases => "-o", :desc => "Output file"
-  method_option :require, :type => :string, :aliases => "-r", :desc => "Load additional Ruby code"
   def generate(md_file)
     ensure_layout_presence(options)
 
