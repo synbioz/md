@@ -68,27 +68,12 @@ class ::MD < Thor # :: is used to escape Thor::Sandbox
 
   desc 'watch', 'Add guardfile to regenerate PDF when md changed'
   def watch
+    guardfile_contents = File.read(__FILE__).split(/^__END__$/).last
+
     open('Guardfile', 'w+') do |f|
-      f.write <<-EOF
-require 'guard/guard'
-
-module ::Guard
-  class MD < ::Guard::Guard
-    def run_all
+      f.write(guardfile_contents)
     end
 
-    def run_on_changes(paths)
-      puts "Rebuilding \#{paths.inspect}"
-      %x{thor md:generate "\#{paths.first}" -f pdf}
-    end
-  end
-end
-
-guard :md do
-  watch(/(.*)\.md/)
-end
-      EOF
-    end
     %x{guard}
   end
 
@@ -186,4 +171,24 @@ end
       end
     end
   end
+end
+
+__END__
+# Automatically generated Guardfile
+require 'guard/guard'
+
+module ::Guard
+  class MD < ::Guard::Guard
+    def run_all
+    end
+
+    def run_on_changes(paths)
+      puts "Rebuilding #{paths.inspect}"
+      %x{thor md:generate "#{paths.first}" -f pdf}
+    end
+  end
+end
+
+guard :md do
+  watch(/(.*)\.md/)
 end
