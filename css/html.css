@@ -38,6 +38,10 @@ ul {
   margin-bottom: 1em;
 }
 
+ul ul {
+  margin-bottom: 0em;
+}
+
 p {
   margin-bottom: 1em;
 }
@@ -49,6 +53,10 @@ p.estimation_intermediaire {
 span.estimation {
   float: right;
   font-weight: bold;
+}
+
+table {
+  width: 100%;
 }
 
 table td, table th {
