@@ -17,6 +17,8 @@ Installation
 ------------
 
     git clone git://github.com/synbioz/md.git
+    cd md
+    bundle install
     thor md:setup # Copy default layout and css
 
     thor install Thorfile
