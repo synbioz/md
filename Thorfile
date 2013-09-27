@@ -11,6 +11,7 @@ class ::MD < Thor # :: is used to escape Thor::Sandbox
   DEFAULT_LAYOUT = File.join(DEFAULT_PATH, "layout.html")
   DEFAULT_HTML_CSS = File.join(DEFAULT_PATH, "css", "html.css")
   DEFAULT_PDF_CSS = File.join(DEFAULT_PATH, "css", "pdf.css")
+  DEFAULT_OUTPUT_PATH = File.expand_path("output")
 
   module Config
     MarkdownDefaults = {
@@ -57,7 +58,11 @@ class ::MD < Thor # :: is used to escape Thor::Sandbox
 
     begin
       if FORMATS.include?(options[:format])
-        self.send("generate_#{options[:format]}", md_file)
+          if FORMATS.include?(options[:output])
+            self.send("generate_#{options[:format]}", md_file, DEFAULT_OUTPUT_PATH)
+          else
+            self.send("generate_#{options[:format]}", md_file, options[:output])
+          end
       else
         raise "Unknown format"
       end
@@ -94,30 +99,43 @@ class ::MD < Thor # :: is used to escape Thor::Sandbox
     raise "pdf.css not found." if !File.exists?(DEFAULT_PDF_CSS) && options[:format] == "pdf"
   end
 
-  def generate_html(md_file)
+  def generate_html(md_file, output)
     renderer = Redcarpet::Markdown.new(Config.renderer, Config.markdown_options)
     filename = File.basename(md_file, '.*')
 
     doc = File.read(md_file)
     template = Liquid::Template.parse(File.read(DEFAULT_LAYOUT))
 
-    File.open("#{filename}.html", 'w') do |f|
+    output_path = File.expand_path(output);
+
+    unless Dir.exists?(output_path)
+      FileUtils.mkdir_p output_path;
+    end 
+
+    File.open(output_path+"/"+"#{filename}.html", 'w') do |f|
       f.write(template.render('content' => renderer.render(doc), 'title' => filename, 'stylesheet' => DEFAULT_HTML_CSS))
     end
   end
 
-  def generate_pdf(md_file)
-    generate_html(md_file)
-
+  def generate_pdf(md_file, output)
+    generate_html(md_file, output)
     filename = File.basename(md_file, '.*')
-    html_path = "#{filename}.html"
-    pdf_path = "#{filename}.pdf"
 
+    output_path = File.expand_path(output);
+    html_path = output_path+"/"+"#{filename}.html"
+
+    unless Dir.exists?(output_path)
+      FileUtils.mkdir_p output_path;
+    end 
+
+    pdf_path = output_path+"/"+"#{filename}.pdf"
+    
     command = pdf_command + " -o #{pdf_path} #{html_path}"
+
     system(command)
 
     # Remove temp html file
-    FileUtils.rm("#{filename}.html")
+    FileUtils.rm(File.expand_path(html_path));
   end
 
   def pdf_command
