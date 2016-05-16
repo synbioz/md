@@ -3,7 +3,7 @@
 
   @bottom {
     color: #1d1d20;
-    content: "Synbioz, 2 rue Hegel, ZAC Euratechnologies, 59160 Lille | page " counter(page) " sur " counter(pages);
+    content: "Synbioz, 336-338 avenue de Dunkerque 59130 Lambersart  page " counter(page) " sur " counter(pages);
     font-family: "Lucida Grande", "Verdana", "Helvetica", "Nimbus Sans L", sans-serif;
     font-size: 8pt;
     border-top: 0.1em solid #ccc;
