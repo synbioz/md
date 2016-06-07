@@ -2,11 +2,11 @@
   margin: 1cm;
 
   @bottom {
-    color: #1d1d20;
+    color: grey;
     content: "Synbioz, 336-338 avenue de Dunkerque 59130 Lambersart  page " counter(page) " sur " counter(pages);
-    font-family: "Lucida Grande", "Verdana", "Helvetica", "Nimbus Sans L", sans-serif;
+    font-family: "Avenir", "Verdana", "Helvetica", "Nimbus Sans L", sans-serif;
     font-size: 8pt;
-    border-top: 0.1em solid #ccc;
+    border-top: 1pt solid #ccc;
   }
 }
 
@@ -16,34 +16,33 @@
   }
 }
 
-body {
+
+body * {
+  font-family: "Avenir", "Verdana", "Helvetica", "Nimbus Sans L", sans-serif;
+  line-height: 1.4;
+}
+
+body, html {
   background: none;
+  font-size: 10pt;
 }
 
-#content {
-  background-image-resolution: 100dpi;
+body {
+  background: url('../images/logo_synbioz.png') no-repeat top left;
 }
 
-#content pre {
-  width: 16cm !important;
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 500;
+  padding: 1em 0 0.25em;
+  margin: 0;
 }
 
-table {
-  border-collapse: collapse;
-}
-
-table td, table th {
-  border: 1px solid grey;
-  padding: 0 10px 0 20px;
-}
-
-div.page-break-before {
-  page-break-before: always;
-}
-
-div.page-break-after {
-  page-break-after: always;
-}
+h1 { font-size: 16pt; }
+h2 { font-size: 14pt; }
+h3 { font-size: 12pt; }
+h4 { font-size: 10pt; }
+h5 { font-size: 9pt; }
+h6 { font-size: 8pt; }
 
 h1.synbioz {
   background: url('../images/logo_synbioz.png') no-repeat center center;
@@ -57,3 +56,48 @@ h2.page-title {
   line-height: 24cm;
   text-align: center;
 }
+
+
+#content {
+  background-image-resolution: 100dpi;
+}
+
+#content pre {
+  width: 16cm !important;
+}
+
+a {
+  color: #4ca5d1;
+}
+
+p {
+  margin: 0 0 0.5em;
+}
+
+li {
+  line-height: 1.6
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table td,
+table th {
+  text-align: left;
+  border: 1px solid grey;
+  padding: 0.2em 0.6em;
+}
+
+table th {
+  font-weight: 500
+}
+
+div.page-break-before {
+  page-break-before: always;
+}
+
+div.page-break-after {
+  page-break-after: always;
+}
+

@@ -5,8 +5,9 @@
 }
 
 body {
-  /* background: url('../images/background.png'); */
-  font-family: "Gill Sans", "Lucida Grande", "Verdana", sans-serif;
+  background: url('../images/background.png');
+  font-family: "Avenir", sans-serif;
+  font-size: 10pt;
 }
 
 a {
@@ -21,13 +22,13 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
   color: #483738;
+  font-weight: normal;
 }
 
 h1 {
   border-bottom: 1px solid #ccc;
   margin-right: 100px;
   padding-bottom: 0.5em;
-  text-align: center;
 }
 
 h2, h3, h4, h5, h6 {

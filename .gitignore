@@ -1,0 +1,6 @@
+.bundle/
+.ruby-version
+Gemfile.lock
+devis/
+*.pdf
+example.md

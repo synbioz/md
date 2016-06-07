@@ -1,12 +1,12 @@
-* {
+/** {
   margin: 0;
   outline: none;
   padding: 0;
-}
+}*/
 
 body {
 	/* background: url('../images/background.png'); */
-	font-family: "Gill Sans", "Lucida Grande", "Verdana", sans-serif;
+	font-family: "Avenir", sans-serif;
 }
 
 a {
@@ -17,20 +17,6 @@ a {
 
 a:hover {
 	border-bottom: 1px solid;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	/*color: #483738;*/
-	color: rgb(40,42,48);
-}
-
-h1 {
-	padding-bottom: 0.5em;
-	text-align: center;
-}
-
-h2, h3, h4 {
-	padding: 0.5em 0;
 }
 
 ul {
@@ -69,7 +55,7 @@ table td, table th {
 	/*border-bottom: 0.1em solid #ccc;*/
 	margin: 1em auto;
 	padding: 1em 2em;
-	width: 40em;
+	/*width: 40em;*/
 	/*border-radius: 1em;*/
 	/*-moz-border-radius: 1em;
 	-webkit-border-radius: 1em;*/
